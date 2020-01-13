@@ -4,6 +4,7 @@ import pyudev
 import sys
 import time
 
+from clients.get_informations import tandem_passenger_information
 from system.copy_files import find_files_to_copy
 from system.copy_files import copy_to_localhost
 from system.copy_files import copy_to_smb
@@ -27,12 +28,16 @@ def copy_files(files, dst):
         raise Exception('Invalid copy option')
 
 def send_customer_videos(action, device):
+    client  = {}
     time.sleep(1)
     for p in psutil.disk_partitions():
         if p.device in device.device_node:
+            if bool(os.getenv('CLIENT_GET_INFORMATION')):
+                client = tandem_passenger_information()
             print('Diretório encontrado: {} ...'.format(p.mountpoint))
-            files = search_videos(p.mountpoint)
-            dst = copy_files(files, 'local')
+            client['videos'] = search_videos(p.mountpoint)
+            dst_dir = copy_files(client['videos'], 'local')
+            print(client)
             umount(p.mountpoint)
 
 def listen_usb():
