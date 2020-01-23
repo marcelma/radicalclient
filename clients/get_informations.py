@@ -1,15 +1,16 @@
 import datetime
 
-def tandem_passenger_information():
+# TODO: validate name with spaces
+
+def client_informations():
     client = {}
     client['name'] = input('Nome do passageiro?: ')
-    client['date'] = datetime.date.today().strftime("%d/%m/%Y")
+    client['date'] = datetime.date.today().strftime("%Y/%m/%d")
     client['cell_phone'] = int(input('Qual o numero do celular do passageiro?: '))
-    client['cell_so'] = input('Qual o Tipo do celular?: ')
     client['instagram'] = input('Qual o instagram do passageiro?: ')
     client['instrutor'] = input('Nome do instrutor?: ')
     client['instrutor_cell'] = ''
-    client['jump_type'] = 'tandem'
+    client['jump_type'] = input('Qual tipo de Salto? (tandem, aff): ')
     client['videos'] = []
     client['remote_dir'] =''
 

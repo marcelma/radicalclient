@@ -1,6 +1,7 @@
 import sys
 
-from system import usb_monitor
+from dotenv import load_dotenv
+from usb import usb_monitor
 
 def crtl_exit():
     sys.stdout.write('\r')
@@ -12,6 +13,7 @@ def server():
 
 if __name__ == '__main__':
     try:
+        load_dotenv()
         server()
     except KeyboardInterrupt:
         crtl_exit()

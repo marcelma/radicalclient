@@ -4,26 +4,24 @@ import pyudev
 import sys
 import time
 
-from clients.get_informations import tandem_passenger_information
-from system.copy_files import find_files_to_copy
-from system.copy_files import copy_to_localhost
-from system.copy_files import copy_to_smb
+from clients.get_informations import client_informations
+from files.copy_files import copy_to_localhost
+from files.copy_files import copy_to_smb
+from files.copy_files import find_files_to_copy
 
 def umount(mountpoint):
-    if not os.system('umount '+ mountpoint):
-        print('pode remover o pendrive! ...')
-    else:
+    if os.system('umount '+ mountpoint):
         raise Exception('Unable to umount usb drive')
 
 def search_videos(mountpoint):
     qnt_files = int(input('Quantos arquivos foram criados?: '))
     return find_files_to_copy(mountpoint, qnt_files)
 
-def copy_files(files, dst):
-    if 'local' == dst:
+def copy_files(files, orig_dir=None, client=None):
+    if not orig_dir:
         return copy_to_localhost(files)
-    elif 'smb' == dst:
-        return copy_to_smb(files)
+    elif orig_dir:
+        return copy_to_smb(files, orig_dir, client)
     else:
         raise Exception('Invalid copy option')
 
@@ -33,12 +31,19 @@ def send_customer_videos(action, device):
     for p in psutil.disk_partitions():
         if p.device in device.device_node:
             if bool(os.getenv('CLIENT_GET_INFORMATION')):
-                client = tandem_passenger_information()
+                client = client_informations()
+
             print('Diretório encontrado: {} ...'.format(p.mountpoint))
             client['videos'] = search_videos(p.mountpoint)
-            dst_dir = copy_files(client['videos'], 'local')
-            print(client)
+
+            orig_dir = copy_files(client['videos'])
+
             umount(p.mountpoint)
+
+            # TODO: post processing: Take fotos from video
+            copy_files(client['videos'], orig_dir, client)
+
+            print('pode remover o pendrive! ...')
 
 def listen_usb():
     context = pyudev.Context()
