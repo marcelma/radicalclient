@@ -4,6 +4,8 @@ import shutil
 import tempfile
 import tqdm
 
+from jinja2 import Environment, FileSystemLoader
+
 #TODO: alert if select more files than have on usb
 
 def find_files_to_copy(mountpoint, num_files):
@@ -24,6 +26,22 @@ def copy_to_localhost(files):
             pbar.update()
 
     return dest_dir
+
+def create_index(client):
+    files = []
+    TEMPLATE_FILE = "./templates/index.j2"
+    THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+
+    j2_env = Environment(loader=FileSystemLoader(THIS_DIR), trim_blocks=True)
+
+    for file in client['videos']:
+        files.append(file.split("/")[-1])
+
+    index_file = j2_env.get_template(TEMPLATE_FILE).render(files=files)
+
+    with open(client['remote_dir']+'/index.html', 'w') as f:
+        f.write(index_file)
+        f.close
 
 def copy_to_smb(files, orig_dir, client):
     dest_dir = os.getenv("COPY_DEST_DIR")
@@ -50,3 +68,5 @@ def copy_to_smb(files, orig_dir, client):
             pbar.update()
 
     shutil.rmtree(orig_dir)
+
+    create_index(client)
