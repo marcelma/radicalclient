@@ -37,21 +37,23 @@ def create_index(client):
     for file in client['videos']:
         files.append(file.split("/")[-1])
 
+    client['videos'] = files
+
     index_file = j2_env.get_template(TEMPLATE_FILE).render(files=files)
 
-    with open(client['remote_dir']+'/index.html', 'w') as f:
+    with open(client['dest_dir']+'/index.html', 'w') as f:
         f.write(index_file)
         f.close
 
 def copy_to_smb(files, orig_dir, client):
     dest_dir = os.getenv("COPY_DEST_DIR")
 
-    if 'aff' in client['jump_type']:
-        full_dest_dir = dest_dir+'/aff/'+client['name']
-    else:
+    if 'tandem' in client['jump_type']:
         full_dest_dir = dest_dir+'/tandem/'+client['date']+'/'+client['name']
+    else:
+        full_dest_dir = dest_dir+'/atleta/'+client['name']+client['jump_type']
 
-    client['remote_dir'] = full_dest_dir
+    client['dest_dir'] = full_dest_dir
 
     # Create target Directory if don't exist
     if not os.path.exists(full_dest_dir):
@@ -68,5 +70,4 @@ def copy_to_smb(files, orig_dir, client):
             pbar.update()
 
     shutil.rmtree(orig_dir)
-
     create_index(client)

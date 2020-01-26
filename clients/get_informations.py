@@ -12,6 +12,6 @@ def client_informations():
     client['instrutor_cell'] = ''
     client['jump_type'] = input('Qual tipo de Salto? (tandem, aff): ')
     client['videos'] = []
-    client['remote_dir'] =''
+    client['dest_dir'] = ''
 
     return client

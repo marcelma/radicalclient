@@ -36,12 +36,12 @@ def send_customer_videos(action, device):
             print('Diretório encontrado: {} ...'.format(p.mountpoint))
             client['videos'] = search_videos(p.mountpoint)
 
-            orig_dir = copy_files(client['videos'])
+            temp_dir = copy_files(client['videos'])
 
             umount(p.mountpoint)
 
             # TODO: post processing: Take fotos from video
-            copy_files(client['videos'], orig_dir, client)
+            copy_files(client['videos'], temp_dir, client)
 
             print('pode remover o pendrive! ...')
 
