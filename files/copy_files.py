@@ -1,4 +1,5 @@
 import glob
+import json
 import os
 import shutil
 import tempfile
@@ -45,6 +46,11 @@ def create_index(client):
         f.write(index_file)
         f.close
 
+def client_data_dump(client):
+    with open(client['dest_dir']+'/data.json', 'w', encoding='utf-8') as f:
+        json.dump(client, f, ensure_ascii=False, indent=4)
+        f.close
+
 def copy_to_smb(files, orig_dir, client):
     dest_dir = os.getenv("COPY_DEST_DIR")
 
@@ -71,3 +77,4 @@ def copy_to_smb(files, orig_dir, client):
 
     shutil.rmtree(orig_dir)
     create_index(client)
+    client_data_dump(client)
