@@ -5,25 +5,11 @@ import sys
 import time
 
 from clients.get_informations import client_informations
-from files.copy_files import copy_to_localhost
-from files.copy_files import copy_to_smb
-from files.copy_files import find_files_to_copy
+from files.copy_files import copy_files, search_videos
 
 def umount(mountpoint):
     if os.system('umount '+ mountpoint):
         raise Exception('Unable to umount usb drive')
-
-def search_videos(mountpoint):
-    qnt_files = int(input('Quantos arquivos foram criados?: '))
-    return find_files_to_copy(mountpoint, qnt_files)
-
-def copy_files(files, orig_dir=None, client=None):
-    if not orig_dir:
-        return copy_to_localhost(files)
-    elif orig_dir:
-        return copy_to_smb(files, orig_dir, client)
-    else:
-        raise Exception('Invalid copy option')
 
 def send_customer_videos(action, device):
     client  = {}
