@@ -57,7 +57,7 @@ def copy_to_smb(files, orig_dir, client):
     if 'tandem' in client['jump_type']:
         full_dest_dir = dest_dir+'/tandem/'+client['date']+'/'+client['name']
     else:
-        full_dest_dir = dest_dir+'/atleta/'+client['name']+client['jump_type']
+        full_dest_dir = dest_dir+'/atleta/'+client['name']+'/'+client['jump_type']
 
     client['dest_dir'] = full_dest_dir
 
