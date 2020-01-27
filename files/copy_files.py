@@ -10,15 +10,19 @@ from jinja2 import Environment, FileSystemLoader
 #TODO: alert if select more files than have on usb
 
 def client_data_dump(client):
-    with open(client['dest_dir']+'/data.json', 'w', encoding='utf-8') as f:
+    file = client['dest_dir']+'/data.json'
+
+    with open(file, 'w', encoding='utf-8') as f:
         json.dump(client, f, ensure_ascii=False, indent=4)
         f.close
+
+    os.chmod(file, 0o600)
 
 def copy_files(files, orig_dir=None, client=None):
     if not orig_dir:
         return copy_to_localhost(files)
     elif orig_dir:
-        return copy_to_smb(files, orig_dir, client)
+        copy_to_smb(files, orig_dir, client)
     else:
         raise Exception('Invalid copy option')
 

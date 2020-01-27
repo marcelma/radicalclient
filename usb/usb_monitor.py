@@ -19,7 +19,7 @@ def send_customer_videos(action, device):
             if bool(os.getenv('CLIENT_GET_INFORMATION')):
                 client = client_informations()
 
-            print('Diretório encontrado: {} ...'.format(p.mountpoint))
+            # print('Diretório encontrado: {} ...'.format(p.mountpoint))
             client['videos'] = search_videos(p.mountpoint)
 
             temp_dir = copy_files(client['videos'])
